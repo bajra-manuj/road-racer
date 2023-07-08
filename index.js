@@ -1,4 +1,4 @@
-import Vehicle, { Player } from "./Vehicle.js";
+import Entity, { Player } from "./Vehicle.js";
 import { drawCar, getRandomInt } from "./utils.js";
 import {
   GAME_WIDTH,
@@ -23,6 +23,8 @@ document.addEventListener("keydown", (e) => {
     player.incY(-15);
   } else if (e.key === "ArrowDown") {
     player.incY(15);
+  } else if (e.key === " ") {
+    player.fire();
   }
 });
 
@@ -30,7 +32,7 @@ const enemies = [];
 const player = new Player(1, PLAYER_Y, VEHICLE_WIDTH, GAME_HEIGHT / 5);
 for (let i = 0; i < ENEMIES_COUNT; i++) {
   enemies.push(
-    new Vehicle(getRandomInt(3), -i * 500, VEHICLE_WIDTH, GAME_HEIGHT / 5)
+    new Entity(getRandomInt(3), -i * 500, VEHICLE_WIDTH, GAME_HEIGHT / 5)
   );
 }
 console.log({ player });
@@ -48,10 +50,22 @@ const update = () => {
     drawCar(ctx, "green", enemy);
   });
   drawCar(ctx, "red", player);
+  player.bullets.forEach((bullet) => {
+    bullet.incY(20);
+    enemies.forEach((enemy) => {
+      if (bullet.show && bullet.isColliding(enemy)) {
+        enemy.randomizePos();
+        bullet.show = false;
+      }
+    });
+    if (bullet.show) {
+      drawCar(ctx, "blue", bullet);
+    }
+  });
   ctx.strokeRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+  let id = requestAnimationFrame(update);
   if (isOver) {
     cancelAnimationFrame(id);
   }
-  let id = requestAnimationFrame(update);
 };
 update();

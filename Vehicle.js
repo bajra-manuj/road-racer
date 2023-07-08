@@ -1,7 +1,7 @@
 import { getRandomInt } from "./utils.js";
 import { GAME_HEIGHT, NO_OF_LANES, PLAYER_Y } from "./constants.js";
 
-export default class Vehicle {
+export default class Entity {
   constructor(lane, y, width, length) {
     this.lane = lane;
     this.y = y;
@@ -27,12 +27,12 @@ export default class Vehicle {
     this.y = -Math.random() * GAME_HEIGHT - GAME_HEIGHT / 10;
     this.lane = getRandomInt(NO_OF_LANES);
   }
-  isColliding(vehicle) {
-    if (this.lane != vehicle.lane) {
+  isColliding(entity) {
+    if (this.lane != entity.lane) {
       return false;
     } else if (
-      vehicle.y > this.y + this.length ||
-      this.y > vehicle.y + vehicle.length
+      entity.y > this.y + this.length ||
+      this.y > entity.y + entity.length
     ) {
       return false;
     }
@@ -40,9 +40,11 @@ export default class Vehicle {
   }
 }
 
-export class Player extends Vehicle {
+export class Player extends Entity {
   constructor(lane, y, width, length) {
     super(lane, y, width, length);
+    this.bulletCount = 2;
+    this.bullets = Bullet.generateBullets(this.bulletCount);
   }
   incY(y) {
     if (y > 0) {
@@ -50,5 +52,38 @@ export class Player extends Vehicle {
       return;
     }
     this.y = Math.max(this.y + y, this.length);
+  }
+  fire() {
+    for (let bullet of this.bullets) {
+      if (!bullet.show) {
+        bullet.fire(this.lane, this.y);
+        break;
+      }
+    }
+  }
+}
+
+class Bullet extends Entity {
+  constructor(lane = 0, y = 0, width = 50, length = 50) {
+    super(lane, y, width, length);
+    this.show = false;
+  }
+  static generateBullets(count) {
+    let bullets = [];
+    for (let i = 0; i < count; i++) {
+      bullets.push(new Bullet());
+    }
+    return bullets;
+  }
+  fire(lane, y) {
+    this.lane = lane;
+    this.y = y;
+    this.show = true;
+  }
+  incY(y) {
+    this.y -= y;
+    if (this.y < 0) {
+      this.show = false;
+    }
   }
 }

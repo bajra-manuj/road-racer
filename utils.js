@@ -5,5 +5,10 @@ export function getRandomInt(max) {
 }
 export const drawCar = (ctx, color, car) => {
   ctx.fillStyle = color;
-  ctx.fillRect((car.lane + 0.25) * LANE_WIDTH, car.y, car.width, car.length);
+  ctx.fillRect(
+    car.lane * LANE_WIDTH + (LANE_WIDTH / 2 - car.width / 2),
+    car.y,
+    car.width,
+    car.length
+  );
 };
