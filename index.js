@@ -1,19 +1,14 @@
 import { Game } from "./Game.js";
-import { drawCar } from "./utils.js";
 import { GAME_WIDTH, GAME_HEIGHT, LANE_WIDTH } from "./constants.js";
 
 const roadImage = new Image();
 roadImage.src = "./road.jpg";
-let roadImageLoaded = false;
-roadImage.onload = () => (roadImageLoaded = true);
 
 const canvas = document.getElementById("game");
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 const ctx = canvas.getContext("2d");
-function drawColoredVehicle(vehicle, color) {
-  drawCar(ctx, color, vehicle);
-}
+
 export function drawText(text, pos, align = "start") {
   ctx.font = "24px Silkscreen";
   ctx.textAlign = align;
@@ -29,7 +24,7 @@ export function drawVehicle(vehicle, image) {
     vehicle.length
   );
 }
-export function drawImageXY() {}
+
 document.addEventListener("keydown", (e) => {
   if (game.isOver) {
     if (e.key === " ") {
@@ -47,9 +42,7 @@ const update = () => {
   ctx.fillStyle = "black";
   ctx.fillRect(GAME_WIDTH / 3 - 10, 0, 10, GAME_HEIGHT);
   ctx.fillRect((2 * GAME_WIDTH) / 3 - 10, 0, 10, GAME_HEIGHT);
-  if (roadImageLoaded) {
-    ctx.drawImage(roadImage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
-  }
+  ctx.drawImage(roadImage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
   game.run();
   ctx.strokeRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   let id = requestAnimationFrame(update);

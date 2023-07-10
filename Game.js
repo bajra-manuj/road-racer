@@ -19,6 +19,7 @@ const bulletImage = new Image();
 bulletImage.src = "./bullet.png";
 const heartImage = new Image();
 heartImage.src = "./heart.png";
+
 export class Game {
   constructor() {
     this.enemies = Vehicle.GenerateVehicles(ENEMIES_COUNT);
@@ -68,7 +69,6 @@ export class Game {
     }
     drawVehicle(this.player, playerCarImage);
 
-    drawVehicle({ lane: 2, y: 30, width: 30, height: 30 }, heartImage);
     drawText(`x${this.player.health}`, { y: 50, x: GAME_WIDTH - 20 }, "end");
     drawText(`score: ${this.score}`, { y: 80, x: GAME_WIDTH - 20 }, "end");
   }
