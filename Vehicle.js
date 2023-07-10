@@ -139,8 +139,3 @@ class Bullet extends Vehicle {
     }
   }
 }
-class Heart extends Vehicle {
-  constructor(lane = 0, y = 0, width = 50, length = 50) {
-    super(lane, y, width, length);
-  }
-}

@@ -11,11 +11,13 @@ const canvas = document.getElementById("game");
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 const ctx = canvas.getContext("2d");
-function draw(vehicle, color) {
+function drawColoredVehicle(vehicle, color) {
   drawCar(ctx, color, vehicle);
 }
-export function drawText(text, pos) {
-  ctx.font = "24px arial";
+export function drawText(text, pos, align = "start") {
+  ctx.font = "24px Silkscreen";
+  ctx.textAlign = align;
+  ctx.fillStyle = "white";
   ctx.fillText(text, pos.x, pos.y);
 }
 export function drawVehicle(vehicle, image) {
@@ -29,6 +31,12 @@ export function drawVehicle(vehicle, image) {
 }
 export function drawImageXY() {}
 document.addEventListener("keydown", (e) => {
+  if (game.isOver) {
+    if (e.key === " ") {
+      game.reset();
+      update();
+    }
+  }
   game.movePlayer(e.key);
 });
 
@@ -46,6 +54,14 @@ const update = () => {
   ctx.strokeRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   let id = requestAnimationFrame(update);
   if (game.isOver) {
+    drawText(
+      `Press space to start/reset`,
+      {
+        y: GAME_HEIGHT / 2,
+        x: GAME_WIDTH / 2,
+      },
+      "center"
+    );
     cancelAnimationFrame(id);
   }
 };

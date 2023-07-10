@@ -1,3 +1,7 @@
+@font-face {
+  font-family: "Silkscreen";
+  src: url("./Silkscreen-Bold.ttf");
+}
 body {
   display: flex;
   justify-content: center;

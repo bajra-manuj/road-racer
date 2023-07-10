@@ -29,7 +29,14 @@ export class Game {
   movePlayer(key) {
     this.player.move(key);
   }
+  reset() {
+    this.enemies = Vehicle.GenerateVehicles(ENEMIES_COUNT);
+    this.player = new Player(1, PLAYER_Y, VEHICLE_WIDTH, GAME_HEIGHT / 5);
+    this.score = 0;
+    this.isOver = false;
+  }
   run() {
+    // TODO: get the graphics logic out of here
     this.player.bullets.forEach((bullet) => bullet.incY(BULLET_VELOCITY));
     this.enemies.forEach((enemy) => {
       enemy.incY(ENEMY_VELOCITY);
@@ -61,6 +68,8 @@ export class Game {
     }
     drawVehicle(this.player, playerCarImage);
 
-    drawText(`x${this.player.health}`, { y: 50, x: GAME_WIDTH - 100 });
+    drawVehicle({ lane: 2, y: 30, width: 30, height: 30 }, heartImage);
+    drawText(`x${this.player.health}`, { y: 50, x: GAME_WIDTH - 20 }, "end");
+    drawText(`score: ${this.score}`, { y: 80, x: GAME_WIDTH - 20 }, "end");
   }
 }
