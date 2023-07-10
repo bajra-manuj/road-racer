@@ -1,5 +1,11 @@
 import { getRandomInt } from "./utils.js";
-import { GAME_HEIGHT, NO_OF_LANES, PLAYER_Y } from "./constants.js";
+import {
+  GAME_HEIGHT,
+  NO_OF_LANES,
+  PLAYER_Y,
+  PLAYER_VELOCITY,
+  VEHICLE_WIDTH,
+} from "./constants.js";
 const BULLET_COUNT = 2;
 const RELOAD_TIME = 100;
 
@@ -10,14 +16,20 @@ export default class Vehicle {
     this.length = length;
     this.width = width;
   }
+  static GenerateVehicles(count) {
+    const enemies = [];
+    for (let i = 0; i < count; i++) {
+      enemies.push(
+        new Vehicle(getRandomInt(3), -i * 500, VEHICLE_WIDTH, GAME_HEIGHT / 5)
+      );
+    }
+    return enemies;
+  }
   incY(y) {
     this.y += y;
     if (this.y > this.length + GAME_HEIGHT) {
       this.randomizePos();
     }
-  }
-  incLane(lane) {
-    this.lane += lane;
   }
   goRight() {
     this.lane = Math.min(this.lane + 1, NO_OF_LANES - 1);
@@ -69,6 +81,19 @@ export class Player extends Vehicle {
     this.health += count;
     return this.health;
   }
+  move(key) {
+    if (key === "ArrowLeft") {
+      this.goLeft();
+    } else if (key === "ArrowRight") {
+      this.goRight();
+    } else if (key === "ArrowUp") {
+      this.incY(-PLAYER_VELOCITY);
+    } else if (key === "ArrowDown") {
+      this.incY(PLAYER_VELOCITY);
+    } else if (key === " ") {
+      this.fire();
+    }
+  }
   fire() {
     // this.bulletCount -= 1;
     // if (this.bulletCount <= 0) {
@@ -112,5 +137,10 @@ class Bullet extends Vehicle {
     if (this.y < 0) {
       this.show = false;
     }
+  }
+}
+class Heart extends Vehicle {
+  constructor(lane = 0, y = 0, width = 50, length = 50) {
+    super(lane, y, width, length);
   }
 }
