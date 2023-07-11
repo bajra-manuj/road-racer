@@ -1,13 +1,5 @@
 import { getRandomInt } from "./utils.js";
-import {
-  GAME_HEIGHT,
-  NO_OF_LANES,
-  PLAYER_Y,
-  PLAYER_VELOCITY,
-  VEHICLE_WIDTH,
-} from "./constants.js";
-const BULLET_COUNT = 2;
-const RELOAD_TIME = 100;
+import { GAME_HEIGHT, NO_OF_LANES, VEHICLE_WIDTH } from "./constants.js";
 
 export default class Vehicle {
   constructor(lane, y, width, length) {
@@ -29,6 +21,11 @@ export default class Vehicle {
     this.y += y;
     if (this.y > this.length + GAME_HEIGHT) {
       this.randomizePos();
+    }
+    if (this.y > GAME_HEIGHT || this.y + this.length < 0) {
+      this.show = false;
+    } else {
+      this.show = true;
     }
   }
   goRight() {
@@ -52,90 +49,9 @@ export default class Vehicle {
     }
     return true;
   }
-}
-
-export class Player extends Vehicle {
-  constructor(lane, y, width, length) {
-    super(lane, y, width, length);
-    this.bulletCount = BULLET_COUNT;
-    this.bullets = Bullet.generateBullets(this.bulletCount);
-    this.health = 3;
-    this.invincible = false;
-    this.reloading = undefined;
-  }
-  incY(y) {
-    if (y > 0) {
-      this.y = Math.min(this.y + y, PLAYER_Y);
-      return;
-    }
-    this.y = Math.max(this.y + y, this.length);
-  }
-  setInvincible() {
-    this.invincible = true;
-    setTimeout(() => (this.invincible = false), 2000);
-  }
-  isInvinsible() {
-    return this.invincible;
-  }
-  incHealth(count) {
-    this.health += count;
-    return this.health;
-  }
-  move(key) {
-    if (key === "ArrowLeft") {
-      this.goLeft();
-    } else if (key === "ArrowRight") {
-      this.goRight();
-    } else if (key === "ArrowUp") {
-      this.incY(-PLAYER_VELOCITY);
-    } else if (key === "ArrowDown") {
-      this.incY(PLAYER_VELOCITY);
-    } else if (key === " ") {
-      this.fire();
-    }
-  }
-  fire() {
-    // this.bulletCount -= 1;
-    // if (this.bulletCount <= 0) {
-    //   if (!this.reloading) {
-    //     this.reloading = setTimeout(() => {
-    //       this.bulletCount = 2;
-    //       clearTimeout(this.reloading);
-    //       this.reloading = undefined;
-    //     }, RELOAD_TIME);
-    //   }
-    //   return;
-    // }
-    for (let bullet of this.bullets) {
-      if (!bullet.show) {
-        bullet.fire(this.lane, this.y);
-        break;
-      }
-    }
-  }
-}
-
-class Bullet extends Vehicle {
-  constructor(lane = 0, y = 0, width = 50, length = 50) {
-    super(lane, y, width, length);
-    this.show = false;
-  }
-  static generateBullets(count) {
-    let bullets = [];
-    for (let i = 0; i < count; i++) {
-      bullets.push(new Bullet());
-    }
-    return bullets;
-  }
-  fire(lane, y) {
-    this.lane = lane;
-    this.y = y;
-    this.show = true;
-  }
-  incY(y) {
-    this.y -= y;
-    if (this.y < 0) {
-      this.show = false;
+  draw(drawCallback) {
+    if (this.show) {
+      drawCallback(this);
     }
   }
 }

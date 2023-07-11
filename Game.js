@@ -1,4 +1,3 @@
-import { getRandomInt } from "./utils.js";
 import {
   GAME_HEIGHT,
   PLAYER_Y,
@@ -7,9 +6,11 @@ import {
   ENEMY_VELOCITY,
   VEHICLE_WIDTH,
   GAME_WIDTH,
+  PLAYER_VELOCITY,
 } from "./constants.js";
 import { drawVehicle, drawText } from "./index.js";
-import Vehicle, { Player } from "./Vehicle.js";
+import Enemy from "./Vehicle.js";
+import Player from "./Player.js";
 
 const playerCarImage = new Image();
 playerCarImage.src = "./player.png";
@@ -22,37 +23,48 @@ heartImage.src = "./heart.png";
 
 export class Game {
   constructor() {
-    this.enemies = Vehicle.GenerateVehicles(ENEMIES_COUNT);
+    this.enemies = Enemy.GenerateVehicles(ENEMIES_COUNT);
     this.player = new Player(1, PLAYER_Y, VEHICLE_WIDTH, GAME_HEIGHT / 5);
     this.score = 0;
     this.isOver = false;
   }
-  movePlayer(key) {
-    this.player.move(key);
+  handleKeyboard(key) {
+    if (key === "ArrowLeft") {
+      this.player.goLeft();
+    } else if (key === "ArrowRight") {
+      this.player.goRight();
+    } else if (key === "ArrowUp") {
+      this.player.incY(-PLAYER_VELOCITY);
+    } else if (key === "ArrowDown") {
+      this.player.incY(PLAYER_VELOCITY);
+    } else if (key === " ") {
+      this.player.fire();
+    }
   }
   reset() {
-    this.enemies = Vehicle.GenerateVehicles(ENEMIES_COUNT);
+    this.enemies = Enemy.GenerateVehicles(ENEMIES_COUNT);
     this.player = new Player(1, PLAYER_Y, VEHICLE_WIDTH, GAME_HEIGHT / 5);
     this.score = 0;
     this.isOver = false;
   }
+  draw() {
+    this.player.draw(drawVehicle(playerCarImage));
+    this.enemies.map((enemy) => enemy.draw(drawVehicle(enemyCarImage)));
+    this.player.bullets.forEach((bullet) => {
+      bullet.draw(drawVehicle(bulletImage));
+    });
+    drawText(`x${this.player.health}`, { y: 50, x: GAME_WIDTH - 20 }, "end");
+    drawText(`score: ${this.score}`, { y: 80, x: GAME_WIDTH - 20 }, "end");
+  }
   run() {
-    // TODO: get the graphics logic out of here
     this.player.bullets.forEach((bullet) => bullet.incY(BULLET_VELOCITY));
     this.enemies.forEach((enemy) => {
       enemy.incY(ENEMY_VELOCITY);
-      drawVehicle(enemy, enemyCarImage);
       // check bullet hit
-      this.player.bullets.forEach((bullet) => {
-        if (bullet.show && bullet.isColliding(enemy)) {
-          enemy.randomizePos();
-          bullet.show = false;
-          this.score += 1;
-        }
-        if (bullet.show) {
-          drawVehicle(bullet, bulletImage);
-        }
-      });
+      if (this.player.hasHitTarget(enemy)) {
+        enemy.randomizePos();
+        this.score += 1;
+      }
       // check collision with this.player
       if (!this.player.isInvinsible() && enemy.isColliding(this.player)) {
         if (this.player.incHealth(-1) === 0) {
@@ -67,9 +79,6 @@ export class Game {
     } else {
       playerCarImage.src = "./player.png";
     }
-    drawVehicle(this.player, playerCarImage);
-
-    drawText(`x${this.player.health}`, { y: 50, x: GAME_WIDTH - 20 }, "end");
-    drawText(`score: ${this.score}`, { y: 80, x: GAME_WIDTH - 20 }, "end");
+    this.draw();
   }
 }

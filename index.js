@@ -15,7 +15,7 @@ export function drawText(text, pos, align = "start") {
   ctx.fillStyle = "white";
   ctx.fillText(text, pos.x, pos.y);
 }
-export function drawVehicle(vehicle, image) {
+export const drawVehicle = (image) => (vehicle) => {
   ctx.drawImage(
     image,
     vehicle.lane * LANE_WIDTH + (LANE_WIDTH / 2 - vehicle.width / 2),
@@ -23,17 +23,7 @@ export function drawVehicle(vehicle, image) {
     vehicle.width,
     vehicle.length
   );
-}
-
-document.addEventListener("keydown", (e) => {
-  if (game.isOver) {
-    if (e.key === " ") {
-      game.reset();
-      update();
-    }
-  }
-  game.movePlayer(e.key);
-});
+};
 
 const game = new Game();
 
@@ -59,3 +49,13 @@ const update = () => {
   }
 };
 update();
+
+document.addEventListener("keydown", (e) => {
+  if (game.isOver) {
+    if (e.key === " ") {
+      game.reset();
+      update();
+    }
+  }
+  game.handleKeyboard(e.key);
+});
