@@ -2,8 +2,27 @@
   font-family: "Silkscreen";
   src: url("./Silkscreen-Bold.ttf");
 }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 body {
   display: flex;
+  color: white;
+  font-family: "Silkscreen";
   justify-content: center;
-  padding-top: 2%;
+  background-image: url("./background.jpg");
+  background-size: cover;
+}
+
+.instr {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  padding: 10px;
+  font-size: 1.2rem;
+}
+audio {
+  display: none;
 }

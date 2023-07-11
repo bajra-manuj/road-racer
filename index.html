@@ -7,7 +7,22 @@
     <link href="styles.css" rel="stylesheet" />
   </head>
   <body>
+    <div class="instr">
+      <h3>Instructions</h3>
+      <br />
+      <p>Arrow keys to move</p>
+      <p>Space to shoot</p>
+      <p>Destroy enemies to score points</p>
+    </div>
     <canvas id="game"></canvas>
+    <audio controls id="gameOver">
+      <source src="gameOver.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio controls id="laser">
+      <source src="laser1.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
     <script type="module" src="index.js"></script>
   </body>
 </html>

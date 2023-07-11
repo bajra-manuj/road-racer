@@ -20,6 +20,7 @@ const bulletImage = new Image();
 bulletImage.src = "./bullet.png";
 const heartImage = new Image();
 heartImage.src = "./heart.png";
+const gameOverAudio = document.getElementById("gameOver");
 
 export class Game {
   constructor() {
@@ -69,6 +70,7 @@ export class Game {
       if (!this.player.isInvinsible() && enemy.isColliding(this.player)) {
         if (this.player.incHealth(-1) === 0) {
           this.isOver = true;
+          gameOverAudio.play();
         } else {
           this.player.setInvincible();
         }

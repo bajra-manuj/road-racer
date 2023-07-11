@@ -9,8 +9,8 @@ canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 const ctx = canvas.getContext("2d");
 
-export function drawText(text, pos, align = "start") {
-  ctx.font = "24px Silkscreen";
+export function drawText(text, pos, align = "start", size = 24) {
+  ctx.font = `${size}px Silkscreen`;
   ctx.textAlign = align;
   ctx.fillStyle = "white";
   ctx.fillText(text, pos.x, pos.y);
@@ -37,6 +37,15 @@ const update = () => {
   ctx.strokeRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   let id = requestAnimationFrame(update);
   if (game.isOver) {
+    drawText(
+      `GAME OVER`,
+      {
+        y: GAME_HEIGHT / 2 - 50,
+        x: GAME_WIDTH / 2,
+      },
+      "center",
+      36
+    );
     drawText(
       `Press space to start/reset`,
       {
