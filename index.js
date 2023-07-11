@@ -47,7 +47,7 @@ const update = () => {
       36
     );
     drawText(
-      `Press space to start/reset`,
+      `Press Enter to start/reset`,
       {
         y: GAME_HEIGHT / 2,
         x: GAME_WIDTH / 2,
@@ -61,7 +61,7 @@ update();
 
 document.addEventListener("keydown", (e) => {
   if (game.isOver) {
-    if (e.key === " ") {
+    if (e.key === "Enter") {
       game.reset();
       update();
     }

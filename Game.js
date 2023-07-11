@@ -21,6 +21,7 @@ bulletImage.src = "./bullet.png";
 const heartImage = new Image();
 heartImage.src = "./heart.png";
 const gameOverAudio = document.getElementById("gameOver");
+const crashAudio = document.getElementById("crash");
 
 export class Game {
   constructor() {
@@ -68,16 +69,19 @@ export class Game {
       }
       // check collision with this.player
       if (!this.player.isInvinsible() && enemy.isColliding(this.player)) {
+        crashAudio.play();
         if (this.player.incHealth(-1) === 0) {
           this.isOver = true;
           gameOverAudio.play();
         } else {
           this.player.setInvincible();
+          enemy.randomizePos();
         }
       }
     });
     if (this.player.isInvinsible()) {
-      playerCarImage.src = "./player_invinsible.png";
+      // blinking effect
+      playerCarImage.src = Date.now() % 2 == 0 ? "./player_invinsible.png" : "";
     } else {
       playerCarImage.src = "./player.png";
     }
